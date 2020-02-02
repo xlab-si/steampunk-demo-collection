@@ -11,6 +11,7 @@ jobs:
     executor: python37
     steps:
       - run_integration_tests
+    parallelism: 3
 
 executors:
   python37:
@@ -51,4 +52,4 @@ commands:
           command: |
             . venv/bin/activate
             cd tests/integration
-            molecule -c base.yml test --all
+            ls molecule | circleci tests split | xargs molecule -c base.yml test -s
