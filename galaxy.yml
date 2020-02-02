@@ -1,0 +1,21 @@
+namespace: steampunk
+name: demo
+version: 1.0.0
+
+readme: README.md
+
+authors:
+  - XLAB Steampunk <steampunk@xlab.si>
+
+
+description: Demo collection for educational purposes
+
+license_file: LICENSE
+
+tags:
+  - demo
+  - education
+
+repository: https://github.com/xlab-si/steampunk-demo-collection
+homepage: https://github.com/xlab-si/steampunk-demo-collection
+issues: https://github.com/xlab-si/steampunk-demo-collection/issues
