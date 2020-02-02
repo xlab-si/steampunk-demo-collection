@@ -1,0 +1,94 @@
+---
+- name: Test marker module
+  hosts: all
+
+  tasks:
+    - name: Test check mode when creating a marker
+      steampunk.demo.marker:
+        path: /tmp/marker
+      register: result
+      check_mode: true
+    - stat:
+        path: /tmp/marker
+      register: stat_result
+    - assert:
+        that:
+          - result is changed
+          - stat_result.stat.exists is false
+
+    - name: Create a marker file with a default content
+      steampunk.demo.marker:
+        path: /tmp/marker
+      register: result
+    - stat:
+        path: /tmp/marker
+      register: stat_result
+    - slurp:
+        path: /tmp/marker
+      register: slurp_result
+    - assert:
+        that:
+          - result is changed
+          - stat_result.stat.exists is true
+          - slurp_result.content | b64decode == "MARKER"
+
+    - name: Test creation idempotency
+      steampunk.demo.marker:
+        path: /tmp/marker
+      register: result
+    - assert:
+        that:
+          - result is not changed
+
+    - name: Update a marker with a non-default content
+      steampunk.demo.marker:
+        path: /tmp/marker
+        content: my content
+      register: result
+    - stat:
+        path: /tmp/marker
+      register: stat_result
+    - slurp:
+        path: /tmp/marker
+      register: slurp_result
+    - assert:
+        that:
+          - result is changed
+          - stat_result.stat.exists is true
+          - slurp_result.content | b64decode == "my content"
+
+    - name: Test check mode when deleting a marker
+      steampunk.demo.marker:
+        path: /tmp/marker
+        state: absent
+      register: result
+      check_mode: true
+    - stat:
+        path: /tmp/marker
+      register: stat_result
+    - assert:
+        that:
+          - result is changed
+          - stat_result.stat.exists is true
+
+    - name: Delete a marker file
+      steampunk.demo.marker:
+        path: /tmp/marker
+        state: absent
+      register: result
+    - stat:
+        path: /tmp/marker
+      register: stat_result
+    - assert:
+        that:
+          - result is changed
+          - stat_result.stat.exists is false
+
+    - name: Test deletion idempotency
+      steampunk.demo.marker:
+        path: /tmp/marker
+        state: absent
+      register: result
+    - assert:
+        that:
+          - result is not changed

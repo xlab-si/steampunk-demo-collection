@@ -1,0 +1,6 @@
+---
+platforms:
+  - name: instance
+    image: xlabsi/debian:10
+    pre_build_image: true
+    pull: true

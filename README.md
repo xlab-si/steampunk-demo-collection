@@ -33,3 +33,22 @@ Now we are ready to use the collection in a playbooks like this:
               THIS IS MY LOUD MARKER
 
 And that is basically it.
+
+
+## Running integration tests
+
+Now, we need to create a virtual environment and install molecule in it:
+
+    $ cd ~/my_collections/ansible_collections/steampunk/demo
+    $ python3 -m venv venv
+    $ . venv/bin/activate
+    (venv) $ pip install -r integration.requirements
+
+Once the dependencies are installed, we can run the integration tests:
+
+    (venv) $ export ANSIBLE_COLLECTIONS_PATHS=$PWD/../../..
+    (venv) $ cd tests/integration
+    (venv) $ molecule -c base.yml test --all
+
+Note that you do need to have *docker* installed and running in order to be
+able to run the integration tests.

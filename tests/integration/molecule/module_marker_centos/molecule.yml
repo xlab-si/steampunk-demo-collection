@@ -1,0 +1,6 @@
+---
+platforms:
+  - name: instance
+    image: xlabsi/centos:7
+    pre_build_image: true
+    pull: true

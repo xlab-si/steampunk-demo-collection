@@ -1,0 +1,6 @@
+---
+platforms:
+  - name: instance
+    image: xlabsi/ubuntu:18.04
+    pre_build_image: true
+    pull: true
