@@ -1,0 +1,54 @@
+version: "2.1"
+
+workflows:
+  version: 2
+  main_workflow:
+    jobs:
+      - integration_tests
+
+jobs:
+  integration_tests:
+    executor: python37
+    steps:
+      - run_integration_tests
+
+executors:
+  python37:
+    docker: [ { image: circleci/python:3.7 } ]
+    working_directory: ~/my_collections/ansible_collections/steampunk/demo
+    environment:
+      ANSIBLE_COLLECTIONS_PATHS: ~/my_collections
+
+commands:
+  run_integration_tests:
+    steps:
+      - checkout:
+          path: .
+      - setup_remote_docker
+      - install_molecule
+      - run_molecule
+
+  install_molecule:
+    steps:
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "integration.requirements" }}
+      - run:
+          name: Install dependencies
+          command: |
+            virtualenv ./venv
+            . venv/bin/activate
+            pip install -r integration.requirements
+      - save_cache:
+          paths:
+            - ./venv
+          key: dependencies-{{ checksum "integration.requirements" }}
+
+  run_molecule:
+    steps:
+      - run:
+          name: Run molecule
+          command: |
+            . venv/bin/activate
+            cd tests/integration
+            molecule -c base.yml test --all
